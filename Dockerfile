@@ -18,7 +18,7 @@ RUN chmod +x gradlew
 RUN ./gradlew build -x test --stacktrace
 
 # --- Run stage ---
-FROM eclipse-temurin:17-jdk-alpine
+FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy built jar từ build stage
