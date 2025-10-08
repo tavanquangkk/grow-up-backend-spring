@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Copy Gradle wrapper + build files
 COPY gradlew .
-COPY gradle ./gradle                 # đây phải copy cả thư mục wrapper
+COPY gradle ./gradle
 COPY build.gradle.kts .
 COPY settings.gradle.kts .
 
