@@ -1,4 +1,4 @@
-FROM gradle:8.3-jdk17 AS build
+FROM gradle:8.3.3-jdk21 AS build
 WORKDIR /app
 
 # Copy wrapper và build files
