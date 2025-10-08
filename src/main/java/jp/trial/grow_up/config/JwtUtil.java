@@ -116,20 +116,28 @@ public class JwtUtil {
     @PostConstruct
     public void init() throws Exception {
         // --- 秘密鍵ロード (PKCS8 PEM) ---
-        String privateKeyPem = new String(Files.readAllBytes(privateKeyResource.getFile().toPath()), StandardCharsets.UTF_8)
-                .replaceAll("-----\\w+ PRIVATE KEY-----", "")
-                .replaceAll("\\s", "");
-        byte[] privateKeyBytes = Base64.getDecoder().decode(privateKeyPem);
-        PKCS8EncodedKeySpec privateSpec = new PKCS8EncodedKeySpec(privateKeyBytes);
-        privateKey = KeyFactory.getInstance("RSA").generatePrivate(privateSpec);
+        String privateKeyPem = System.getenv("RSA_PRIVATE_KEY");
+        if(privateKeyPem == null){
+            privateKeyPem = new String(Files.readAllBytes(privateKeyResource.getFile().toPath()), StandardCharsets.UTF_8)
+                    .replaceAll("-----\\w+ PRIVATE KEY-----", "")
+                    .replaceAll("\\s", "");
+            byte[] privateKeyBytes = Base64.getDecoder().decode(privateKeyPem);
+            PKCS8EncodedKeySpec privateSpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+            privateKey = KeyFactory.getInstance("RSA").generatePrivate(privateSpec);
+        }
+
 
         // --- 公開鍵ロード (X.509 PEM) ---
-        String publicKeyPem = new String(Files.readAllBytes(publicKeyResource.getFile().toPath()), StandardCharsets.UTF_8)
-                .replaceAll("-----\\w+ PUBLIC KEY-----", "")
-                .replaceAll("\\s", "");
-        byte[] publicKeyBytes = Base64.getDecoder().decode(publicKeyPem);
-        X509EncodedKeySpec publicSpec = new X509EncodedKeySpec(publicKeyBytes);
-        publicKey = KeyFactory.getInstance("RSA").generatePublic(publicSpec);
+        String publicKeyPem = System.getenv("RSA_PUBLIC_KEY");
+        if(publicKeyPem == null){
+            publicKeyPem = new String(Files.readAllBytes(publicKeyResource.getFile().toPath()), StandardCharsets.UTF_8)
+                    .replaceAll("-----\\w+ PUBLIC KEY-----", "")
+                    .replaceAll("\\s", "");
+            byte[] publicKeyBytes = Base64.getDecoder().decode(publicKeyPem);
+            X509EncodedKeySpec publicSpec = new X509EncodedKeySpec(publicKeyBytes);
+            publicKey = KeyFactory.getInstance("RSA").generatePublic(publicSpec);
+        }
+
     }
 
     // アクセストークン生成

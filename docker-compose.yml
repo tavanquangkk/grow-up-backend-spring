@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: growup_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+  app:
+    build: .
+    environment:
+      JDBC_DATABASE_URL: jdbc:postgresql://db:5432/growup_db
+      JDBC_DATABASE_USERNAME: postgres
+      JDBC_DATABASE_PASSWORD: postgres
+      JWT_SECRET: your-secret
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db

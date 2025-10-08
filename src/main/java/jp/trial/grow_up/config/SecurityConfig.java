@@ -1,6 +1,6 @@
 package jp.trial.grow_up.config;
 
-
+import jp.trial.grow_up.config.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -51,7 +51,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // フロントエンドのURLを許可
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173","http://localhost:58363"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:5173", "http://localhost:58363"));
+
         // 許可するHTTPメソッド
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         // 許可するHTTPヘッダー
@@ -60,7 +61,7 @@ public class SecurityConfig {
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/**", configuration); // /api/ 以下のパスにこの設定を適用
+        source.registerCorsConfiguration("/**", configuration); // /api/ 以下のパスにこの設定を適用
         return source;
     }
     // --- ▲▲▲ CORS設定をここに集約 ▲▲▲ ---
