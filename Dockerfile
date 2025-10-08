@@ -11,4 +11,5 @@ COPY settings.gradle.kts .
 COPY src ./src
 
 # Build
+RUN ./gradlew cleanBuildCache
 RUN ./gradlew build -x test --no-daemon
