@@ -1,34 +1,18 @@
-# --- GIAI ĐOẠN BUILD ---
-FROM gradle:jdk21 AS build
+# Stage 1: Build
+FROM gradle:8.7-jdk21 AS builder
+WORKDIR /app
+COPY . .
+RUN gradle clean build -x test --no-daemon
 
+# Stage 2: Run
+FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
-# Copy wrapper và build files
-COPY gradlew .
-COPY gradle ./gradle
-COPY build.gradle.kts .
-COPY settings.gradle.kts .
+# Copy JAR file từ stage build
+COPY --from=builder /app/build/libs/*.jar app.jar
 
-# Copy source
-COPY src ./src
-
-# Gán quyền thực thi cho gradlew
-RUN chmod +x gradlew
-
-# Build
-RUN ./gradlew cleanBuildCache
-RUN ./gradlew build -x test --no-daemon
-
-# --- THÊM DÒNG NÀY ĐỂ DEBUG ---
-RUN ls -l /app/build/libs/ # <-- THÊM DÒNG NÀY VÀO CUỐI GIAI ĐOẠN BUILD
-
-# --- GIAI ĐOẠN CUỐI CÙNG (Final Stage) ---
-FROM openjdk:21-jdk-slim
-WORKDIR /app
-
-# Dòng này sẽ được chỉnh sửa sau khi bạn có tên JAR chính xác
-COPY --from=build /app/build/libs/*.jar app.jar
-
+# Expose port
 EXPOSE 8080
 
+# Chạy ứng dụng
 ENTRYPOINT ["java", "-jar", "app.jar"]
