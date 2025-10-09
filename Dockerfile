@@ -1,4 +1,4 @@
-FROM gradle:jdk21 AS build # <-- Thay đổi ở đây
+FROM gradle:jdk21 AS build
 WORKDIR /app
 
 # Copy wrapper và build files
