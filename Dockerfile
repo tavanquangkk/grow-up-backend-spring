@@ -9,27 +9,26 @@ COPY gradle ./gradle
 COPY build.gradle.kts .
 COPY settings.gradle.kts .
 
-# Copy source (có thể copy sau để test riêng biệt build files)
-# COPY src ./src # Tạm thời comment dòng này nếu bạn muốn test build cơ bản trước
+# Copy source
+COPY src ./src
 
-# Gán quyền thực thi cho gradlew (quan trọng!)
+# Gán quyền thực thi cho gradlew
 RUN chmod +x gradlew
 
-# Build từng bước để debug
-# Tạm thời thay thế dòng cleanBuildCache bằng một lệnh Gradle đơn giản hơn
-# RUN ./gradlew cleanBuildCache
+# Build
+RUN ./gradlew cleanBuildCache
+RUN ./gradlew build -x test --no-daemon
 
-# Chỉnh sửa dòng này để in ra debug log:
-# Thử chạy một lệnh Gradle đơn giản để kiểm tra môi trường
-RUN ./gradlew tasks --debug # <-- Thay đổi ở đây để kiểm tra và lấy debug log
+# --- THÊM DÒNG NÀY ĐỂ DEBUG ---
+RUN ls -l /app/build/libs/ # <-- THÊM DÒNG NÀY VÀO CUỐI GIAI ĐOẠN BUILD
 
-# Nếu lệnh trên thành công, hãy thử build lại với debug:
-# RUN ./gradlew build -x test --no-daemon --debug # <-- Sử dụng dòng này sau khi `./gradlew tasks` thành công
-
-# ... (Giữ nguyên các phần còn lại của Dockerfile)
 # --- GIAI ĐOẠN CUỐI CÙNG (Final Stage) ---
 FROM openjdk:21-jdk-slim
 WORKDIR /app
+
+# Dòng này sẽ được chỉnh sửa sau khi bạn có tên JAR chính xác
 COPY --from=build /app/build/libs/*.jar app.jar
+
 EXPOSE 8080
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
