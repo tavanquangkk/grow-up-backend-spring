@@ -19,7 +19,7 @@ RUN ./gradlew build -x test --no-daemon
 
 # --- GIAI ĐOẠN CUỐI CÙNG (Final Stage) ---
 # Sử dụng một JRE image nhẹ hơn và TỒN TẠI trên Docker Hub
-FROM openjdk:21-jre-slim-bullseye
+FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy JAR từ giai đoạn build
