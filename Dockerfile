@@ -1,5 +1,5 @@
 # --- GIAI ĐOẠN BUILD ---
-FROM gradle:jdk21 AS build # Hoặc tag Gradle/JDK nào bạn đang dùng thành công
+FROM gradle:jdk21 AS build
 
 WORKDIR /app
 
