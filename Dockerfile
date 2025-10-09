@@ -1,4 +1,7 @@
+# --- GIAI ĐOẠN BUILD ---
+# Sử dụng image Gradle/JDK tồn tại (ví dụ: gradle:jdk21)
 FROM gradle:jdk21 AS build
+
 WORKDIR /app
 
 # Copy wrapper và build files
@@ -15,8 +18,8 @@ RUN ./gradlew cleanBuildCache
 RUN ./gradlew build -x test --no-daemon
 
 # --- GIAI ĐOẠN CUỐI CÙNG (Final Stage) ---
-# Sử dụng một JRE image nhẹ hơn để chạy ứng dụng
-FROM openjdk:21-jre-slim
+# Sử dụng một JRE image nhẹ hơn và TỒN TẠI trên Docker Hub
+FROM openjdk:21-jre-slim-bullseye
 WORKDIR /app
 
 # Copy JAR từ giai đoạn build
