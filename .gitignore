@@ -222,7 +222,13 @@ $RECYCLE.BIN/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
+build/classes
+build/generated
+build/reports
+build/resources
+build/tmp
+build/resolvedMainClassName
+build/test-results
 !**/src/main/**/build/
 !**/src/test/**/build/
 
@@ -239,7 +245,6 @@ build/
 .project
 .settings
 bin
-build
 target
 dependency-reduced-pom.xml
 *.sublime-*
