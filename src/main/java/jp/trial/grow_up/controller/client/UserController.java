@@ -4,10 +4,12 @@ import com.cloudinary.Api;
 import jp.trial.grow_up.domain.Follow;
 import jp.trial.grow_up.domain.Skill;
 import jp.trial.grow_up.domain.User;
+import jp.trial.grow_up.domain.Workshop;
 import jp.trial.grow_up.dto.client.RequestFollow;
 import jp.trial.grow_up.dto.client.RequestUpdateInfor;
 import jp.trial.grow_up.dto.client.ResponseFollowDTO;
 import jp.trial.grow_up.dto.client.ResponseUserProfileDTO;
+import jp.trial.grow_up.dto.workshop.WorkshopDTO;
 import jp.trial.grow_up.service.client.FollowService;
 import jp.trial.grow_up.service.client.SkillService;
 import jp.trial.grow_up.service.client.UserService;
@@ -38,6 +40,37 @@ class UserController {
         this.cloudinaryService = cloudinaryService;
         this.followSevice = followSevice;
         this.skillService = skillService;
+    }
+
+
+    //find users by keyword
+
+    @GetMapping("/find")
+    public ResponseEntity<ApiResponse<List<ResponseUserProfileDTO>>> findWorkshops(
+            @RequestParam("keyword") String keyword) {
+
+        ApiResponse<List<ResponseUserProfileDTO>> res = new ApiResponse<>();
+        if (keyword == null || keyword.trim().isEmpty()) {
+            res.setStatus("error");
+            res.setMessage("検索キーワードを入力してください。");
+            return ResponseEntity.badRequest().body(res);
+        }
+
+        List<User> usList = this.userService.findUsersByKeyword(keyword);
+        if (usList.isEmpty()) {
+            res.setStatus("error");
+            res.setMessage("見つかりませんでした。他のキーワードを試してください。");
+            return ResponseEntity.badRequest().body(res);
+        }
+
+        List<ResponseUserProfileDTO> resData = usList.stream()
+                .map(us -> UserConvert.convertToResponseUserProfileDTO(us))
+                .toList();
+
+        res.setStatus("success");
+        res.setMessage("検索結果一覧です！");
+        res.setData(resData);
+        return ResponseEntity.ok(res);
     }
 
 

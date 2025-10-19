@@ -1,4 +1,6 @@
-FROM openjdk:17-jdk-alpine
-COPY build/*.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
-EXPOSE 8080
+FROM gradle:7-jdk21
+
+WORKDIR /api
+COPY . .
+
+CMD ["./gradlew","bootRun"]

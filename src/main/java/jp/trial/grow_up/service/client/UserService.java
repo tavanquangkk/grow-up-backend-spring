@@ -33,6 +33,11 @@ public class UserService implements UserDetailsService {
         return  this.userRepository.save(user);
     }
 
+
+    //find user by keyword
+    public List<User> findUsersByKeyword(String keyword){
+        return this.userRepository.findByNameContainingIgnoreCaseOrDepartmentContainingIgnoreCaseOrIntroductionContainingIgnoreCase(keyword,keyword,keyword);
+    }
     // get user by name
     public User getUserByName(String name) {
         return this.userRepository.findByName(name).orElseThrow(

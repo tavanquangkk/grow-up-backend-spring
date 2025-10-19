@@ -24,6 +24,10 @@ public interface WorkshopRepository extends JpaRepository<Workshop, UUID> {
     //自分が作成した勉強会の一覧取得
     List<Workshop> findByHostId(UUID hostId);
 
+    //find workshop by keyword
+
+    List<Workshop> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String name,String des);
+
     @Modifying
     @Transactional
     @Query("DELETE FROM Workshop w WHERE w.host.id = :id")

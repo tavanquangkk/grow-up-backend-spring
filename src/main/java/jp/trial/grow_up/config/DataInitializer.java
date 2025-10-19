@@ -20,7 +20,7 @@ public class DataInitializer {
                 admin.setPassword(encoder.encode("admin123")); // ← 本番はもっと強力なパスワードに！
                 admin.setRole(UserRole.ADMIN);
                 userRepository.save(admin);
-                System.out.println("✅ Admin user created: admin@example.com / admin123");
+                System.out.println("✅ Admin user created: admin@gmail.com / admin123");
             }
         };
     }

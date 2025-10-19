@@ -27,6 +27,36 @@ public class WorkshopController {
     }
     //最新勉強会　5件　GET /api/v1/workshops/recent?limit=5
 
+    //find workshops by keyword
+    @GetMapping("/find")
+    public ResponseEntity<ApiResponse<List<WorkshopDTO>>> findWorkshops(
+            @RequestParam("keyword") String keyword) {
+
+        ApiResponse<List<WorkshopDTO>> res = new ApiResponse<>();
+        if (keyword == null || keyword.trim().isEmpty()) {
+            res.setStatus("error");
+            res.setMessage("検索キーワードを入力してください。");
+            return ResponseEntity.badRequest().body(res);
+        }
+
+        List<Workshop> wsList = this.workshopService.findWorkshopByKeyword(keyword);
+        if (wsList.isEmpty()) {
+            res.setStatus("error");
+            res.setMessage("見つかりませんでした。他のキーワードを試してください。");
+            return ResponseEntity.badRequest().body(res);
+        }
+
+        List<WorkshopDTO> resData = wsList.stream()
+                .map(this.workshopService::convertToWorkshopDTO)
+                .toList();
+
+        res.setStatus("success");
+        res.setMessage("検索結果一覧です！");
+        res.setData(resData);
+        return ResponseEntity.ok(res);
+    }
+
+
 
     //全ての勉強会　GET /api/v1/workshops
     @GetMapping

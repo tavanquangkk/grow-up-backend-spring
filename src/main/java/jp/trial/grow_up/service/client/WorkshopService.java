@@ -28,6 +28,11 @@ public class WorkshopService {
         return workshopRepository.existsByName(workshop.getName());
     }
 
+    //勉強会search
+    public List<Workshop> findWorkshopByKeyword(String keyword){
+        return this.workshopRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword,keyword);
+    }
+
     //convert to WorkshopDTO
     public WorkshopDTO convertToWorkshopDTO(Workshop workshop){
         WorkshopDTO wsd = new WorkshopDTO();
