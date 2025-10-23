@@ -33,7 +33,6 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -42,8 +41,23 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+
     }
 
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(
+                "/swagger-ui/**",
+                "/swagger-ui.html",
+                "/v3/api-docs/**",
+                "/swagger-resources/**",
+                "/webjars/**",
+                "/configuration/ui",
+                "/configuration/security",
+                "/error"
+        );
+    }
 
 
     // --- ▼▼▼ CORS設定をここに集約 ▼▼▼ ---
@@ -51,7 +65,9 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // フロントエンドのURLを許可
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:5173", "http://localhost:58363"));
+         configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:5173", "http://localhost:58363"));
+
+
 
         // 許可するHTTPメソッド
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
@@ -64,11 +80,12 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration); // /api/ 以下のパスにこの設定を適用
         return source;
     }
+
     // --- ▲▲▲ CORS設定をここに集約 ▲▲▲ ---
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http    .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
@@ -80,30 +97,27 @@ public class SecurityConfig {
                                 "/api/v1/auth/refresh",
                                 "/api/v1/admin/login",
                                 "/api/v1/admin/test",
-                                "/api/v1/admin/refresh"
-                        ).permitAll()
-                        .requestMatchers(
-                                "/swagger-resources",
-                                "/swagger-resources/**",
-                                "/configuration/ui",
-                                "/configuration/security",
-                                "/swagger-ui.html",
-                                "/webjars/**",
-                                "/v3/api-docs/**",
-                                "/api/public/**",
-                                "/api/public/authenticate",
-                                "/actuator/*",
-                                "/swagger-ui/**").permitAll()
+                                "/api/v1/admin/refresh")
+                        .permitAll()
+//                        .requestMatchers(
+//                                "/swagger-resources",
+//                                "/swagger-resources/**",
+//                                "/configuration/ui",
+//                                "/configuration/security",
+//                                "/swagger-ui.html",
+//                                "/webjars/**",
+//                                "/v3/api-docs/*",
+//                                "/api/public/**",
+//                                "/api/public/authenticate",
+//                                "/actuator/*",
+//                                "/swagger-ui/**")
+//                        .permitAll()
                         .requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
-//                        .requestMatchers("/api/v1/**").hasAnyRole("USER", "ADMIN")
-                        .anyRequest().authenticated()
-                )
+                        // .requestMatchers("/api/v1/**").hasAnyRole("USER", "ADMIN")
+                        .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
 }
-
-
-
