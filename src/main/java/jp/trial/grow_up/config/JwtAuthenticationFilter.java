@@ -61,6 +61,7 @@
 //
 
 package jp.trial.grow_up.config;
+
 import jp.trial.grow_up.config.JwtUtil;
 
 import jakarta.servlet.FilterChain;
@@ -73,7 +74,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 
 import java.io.IOException;
 
@@ -90,8 +90,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+            HttpServletResponse response,
+            FilterChain filterChain)
             throws ServletException, IOException {
 
         // 認証APIはスキップ
@@ -99,6 +99,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        // 認証APIはスキップ
+//        if (request.getServletPath().startsWith("/swagger")
+//                || request.getServletPath().startsWith("/v3/api-docs")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
 
         String authHeader = request.getHeader("Authorization");
 
@@ -110,8 +116,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
                 if (jwtUtil.validateToken(token, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
+                            null, userDetails.getAuthorities());
 
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
