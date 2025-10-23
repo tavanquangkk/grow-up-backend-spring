@@ -94,29 +94,7 @@ A Spring Boot application with JWT authentication and PostgreSQL, containerized 
    ```
 4. **Access**: `http://localhost:8080`
 
-### 4. Free Deployment (Render)
-- **Free Tier**: 750 hours/month, PostgreSQL (90-day trial, 90GB).
-- **Steps**:
-  1. Push code to GitHub (include `Dockerfile`).
-  2. Sign up at [render.com](https://render.com) with GitHub.
-  3. Create Web Service:
-     - New > Web Service > Select GitHub repo.
-     - Runtime: Docker.
-     - Build: `./gradlew build`.
-     - Start: `java -jar build/libs/grow-up-app.jar`.
-  4. Create PostgreSQL:
-     - New > PostgreSQL > Free tier.
-     - Copy DB URL (e.g., `postgresql://user:pass@host:port/db`).
-  5. Set Environment Variables:
-     ```plaintext
-     SPRING_DATASOURCE_URL=<Render Postgres URL>
-     SPRING_DATASOURCE_USERNAME=<Postgres User>
-     SPRING_DATASOURCE_PASSWORD=<Postgres Password>
-     JWT_PRIVATE_KEY=<Content of private-key.pem>
-     JWT_PUBLIC_KEY=<Content of public-key.pem>
-     ```
-  6. Deploy: Access via Render-provided URL.
-- **Limitations**: Idle services sleep after 15 minutes; DB free for 90 days.
+
 
 ## Notes
 - Ensure `keys/` and `.pem` files have read permissions.
