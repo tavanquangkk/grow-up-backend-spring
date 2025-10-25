@@ -62,7 +62,7 @@
 
    # JWT config
    jwt.private-key=${RSA_PRIVATE_KEY} # 環境変数にファイルの中身を設定する、もしくは classpath:keys/private-key.pem
-jwt.public-key=${RSA_PUBLIC_KEY}   # 同上
+   jwt.public-key=${RSA_PUBLIC_KEY}   # 同上
    jwt.issuer=grow-up-app
    jwt.expiration=900000
 
