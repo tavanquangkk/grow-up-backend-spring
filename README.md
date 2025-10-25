@@ -78,7 +78,7 @@
 もし Docker で動かす場合は
 
 ```sh
-docker-compose up --build
+   docker-compose up --build
 ```
 
 ## その他
