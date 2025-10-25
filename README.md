@@ -1,51 +1,102 @@
 # Grow Up Backend
 
 ## 概要
+
 このプロジェクトは Spring Boot を使用したバックエンド API サーバーです。
 
 ## 必要環境
-- Java 17 以上
-- Gradle
-- PostgreSQL (推奨)
+
+-   Java 17 以上
+-   Gradle
+-   PostgreSQL
 
 ## セットアップ手順
+
 1. リポジトリをクローン
-   ```sh
-git clone <このリポジトリのURL>
-```
-2. データベースを作成
-   - PostgreSQL で新しいデータベースを作成します。
-   - 例: `growup_db`
-3. `src/main/resources/application.properties` を編集し、DB接続情報を設定します。
-   ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/growup_db
-spring.datasource.username=your_db_user
-spring.datasource.password=your_db_password
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-```
-4. Gradle で依存関係をインストール
-   ```sh
-./gradlew build
-```
-5. アプリケーションを起動
-   ```sh
-./gradlew bootRun
+
+```sh
+   git clone https://github.com/tavanquangkk/grow-up-backend-spring.git
+
+
 ```
 
-## データベース設定例 (PostgreSQL)
+2. データベースを作成
+
 ```sh
-# DB作成
-createdb growup_db
-# ユーザー作成
-createuser your_db_user --pwprompt
-# 権限付与
-psql -c "GRANT ALL PRIVILEGES ON DATABASE growup_db TO your_db_user;"
+   # DB作成
+   createdb growup_db
+   # ユーザー作成（パスワードを聞かれます）
+   createuser your_db_user --pwprompt
+   # 権限付与
+   psql -c "GRANT ALL PRIVILEGES ON DATABASE growup_db TO your_db_user;"
+```
+
+3. JWT Key 生成
+
+```sh
+
+   mkdir -p src/main/resources/keys
+
+   openssl genpkey -algorithm RSA -out src/main/resources/keys/private-key.pem -pkeyopt rsa_keygen_bits:2048
+
+   openssl rsa -pubout -in src/main/resources/keys/private-key.pem -out src/main/resources/keys/public-key.pem
+
+```
+
+4. `src/main/resources/application.properties` を作成し、DB 接続情報を設定します。
+
+-   環境変数で置き換えてください（推奨）。（直接 application.properties に置き換えても可能です）
+
+```properties
+   # DB 接続情報
+   spring.datasource.driver-class-name=org.postgresql.Driver
+   spring.datasource.url=${JDBC_DATABASE_URL}
+   spring.datasource.username=${JDBC_DATABASE_USERNAME}
+   spring.datasource.password=${JDBC_DATABASE_PASSWORD}
+   spring.jpa.hibernate.ddl-auto=update
+
+   # Cloudinary config
+   cloudinary.cloud_name=${CLOUDINARY_CLOUD_NAME}
+   cloudinary.api_key=${CLOUDINARY_API_KEY}
+   cloudinary.api_secret=${CLOUDINARY_API_SECRET}
+
+   # JWT config
+   jwt.private-key=${RSA_PRIVATE_KEY} # 環境変数にファイルの中身を設定する、もしくは classpath:keys/private-key.pem
+jwt.public-key=${RSA_PUBLIC_KEY}   # 同上
+   jwt.issuer=grow-up-app
+   jwt.expiration=900000
+
+```
+
+5. アプリケーションを起動
+
+```
+   ./gradlew bootRun
+
+```
+
+もし Docker で動かす場合は
+
+```sh
+docker-compose up --build
 ```
 
 ## その他
-- 設定ファイルは `src/main/resources/application.properties` にあります。
-- 詳細はコメントや各クラスの Javadoc を参照してください。
 
-## ライセンス
-MIT License
+### API ドキュメント
+
+-   SwaggerUI で全 API を確認できます。
+
+```デフォルトの URL（ローカル環境）：
+
+http://localhost:8080/swagger-ui/index.html
+
+
+Swagger には以下の情報が含まれます：
+
+エンドポイント URL
+
+リクエスト・レスポンス形式
+
+HTTP メソッド（GET, POST, PUT, DELETE ）
+```
